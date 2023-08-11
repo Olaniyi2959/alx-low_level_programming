@@ -3,7 +3,7 @@
  * main - program that prints the size of various types on the computer
  * retun: 0 (Sucess)
  */
-int (void)
+int main(void)
 {
 char a;
 int b;
