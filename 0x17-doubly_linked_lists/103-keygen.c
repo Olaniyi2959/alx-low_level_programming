@@ -1,56 +1,53 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
 
 /**
- * main - Generates and prints passwords for crackme 5 executable.
- * @argc: The number of arguments supplied to the program.
- * @argv: An array of pointers to the arguments.
+ * main - generate a main function
+ * @argc: number of arguments passed
+ * @argv: arguments passed to main
  *
- * Return: Always 0.
+ * Return: 0 on success, 1 on error
  */
-int main(int __attribute__((__unused__)) argc, char *argv[])
+int main(int argc, char *argv[])
 {
+	unsigned int randomValue = 0;
+	unsigned int squaredSum = 0;
+	unsigned int product = 1;
+	unsigned int sum = 0;
+	size_t usernameLength = strlen(argv[1]);
+	unsigned char maxChar = argv[1][0];
+	unsigned int i;
+	char *charset = "A-CHRDw87lNS0E9B2Tib";
+	char key[7] = "      ";
 
-	char password[7], *codex;
-	int len = strlen(argv[1]), i, tmp;
-
-	codex = "A-CHRDw87lNS0E9B2TibgpnMVys5XzvtOGJcYLU+4mjW6fxqZeF3Qa1rPhdKIouk";
-
-	tmp = (len ^ 59) & 63;
-	password[0] = codex[tmp];
-
-	tmp = 0;
-	for (i = 0; i < len; i++)
-		tmp *= argv[1][i];
-	password[1] = codex[(tmp ^ 79) & 63];
-
-	tmp = 1;
-	for (i = 0; i < len; i++)
-		tmp *= argv[1][i];
-	password[2] = codex[(tmp ^ 85) & 63];
-
-	tmp = 0;
-	for (i = 0; i < len; i++)
+	if (argc != 2)
 	{
-
-		if (argv[1][i] > tmp)
-			tmp = argv[1][i];
+		printf("Correct usage: %s username\n", argv[0]);
+		return (1);
 	}
-	srand(tmp ^ 14);
-	password[3] = codex[rand() & 63];
+	key[0] = charset[(usernameLength ^ 59) & 63];
 
-	tmp = 0;
-	for (i = 0; i < len; i++)
-		tmp += (argv[1][i] * argv[1][i]);
-	password[4] = codex[(tmp ^ 239) & 63];
+	for (i = 0; i < usernameLength; i++)
+		sum += argv[1][i];
+	key[1] = charset[(sum ^ 79) & 63];
 
-	for (i = 0; i < argv[1][0]; i++)
-		tmp = rand();
-	password[5] = codex[(tmp ^ 229) & 63];
+	for (i = 0; i < usernameLength; i++)
+		product *= argv[1][i];
+	key[2] = charset[(product ^ 85) & 63];
 
+	for (i = 0; i < usernameLength; i++)
+		if (argv[1][i] >= maxChar)
+			maxChar = argv[1][i];
+	srand(maxChar ^ 14);
+	key[3] = charset[rand() & 63];
 
-	password[6] = '\0';
-	printf("%s", password);
+	for (i = 0; i < usernameLength; i++)
+		squaredSum += argv[1][i] * argv[1][i];
+	key[4] = charset[(squaredSum ^ 239) & 63];
+	for (i = 0; (unsigned char)i < argv[1][0]; i++)
+		randomValue = rand();
+	key[5] = charset[(randomValue ^ 229) & 63];
+	printf("%s\n", key);
 	return (0);
 }
